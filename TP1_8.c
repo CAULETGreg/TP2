@@ -2,9 +2,27 @@
 #include<stdlib.h>
 #include<time.h>
 
-int attack ( int a ){
+struct GenerateAll { 
+
+	int pv;
+	int mana;
+	int force;
 	
-	a = rand()% 20+10;
+	int state;
+	int death;
+	
+	int choice;
+	int target;
+	
+	int attack;
+};
+
+typedef struct GenerateAll generate;
+
+int attack ( int f ){
+	
+	int a = rand()%20+1;
+	a = a*f;
 	
 	return a;
 
@@ -48,356 +66,317 @@ int main(void){
     
     srand(time(NULL));
     
-    int attackMonster;
-    int attackPlayer;
-    int pvMonster = 100;
-    int pvPlayer = 150;
-    int choice;
-    int monsterChoice;
-    int manaPlayer = 50;
-    int monsterState;
-    int manaMonster = 40;
-    int playerState = 0;
     int errorChoice;
+	
+		// caracteristique
+		// normal
+		
+		generate p1 = {150,0,3,0,0,0,0,0};
+		
+		// mage 
+		generate p2 = {75,100,1,0,0,0,0,0};
+		
+		// healer
+		generate p3 = {100,75,1,0,0,0,0,0};
+		
+		// tank
+		generate p4 = {250,0,2,0,0,0,0,0};
+		
+		//monster
+		generate m1 = {500,40,80,0,0,0,1,0};
+		
+	
+	printf("Pv Monster : %d\n", m1.pv);
+    printf("Mana Monster : %d\n", m1.mana);
+    printf("Pv Player 1 : %d\n", p1.pv);
+	printf("Pv Player 2 : %d\n", p2.pv);
+    printf("Mana Player 2 : %d\n", p2.mana);
+	printf("Pv Player 3 : %d\n", p3.pv);
+    printf("Mana Player 3 : %d\n", p3.mana);
+	printf("Pv Player 4 : %d\n", p4.pv);
+	
     
-    printf("Pv Monster : %d\n", pvMonster);
-    printf("Mana Monster : %d\n", manaMonster);
-    printf("Pv Player : %d\n", pvPlayer);
-    printf("Mana Player : %d\n", manaPlayer);
-    
-    while ( pvMonster > 0 && pvPlayer > 0 ){
-        
+    while ( m1.pv > 0 && ( p1.pv > 0 || p2.pv > 0 || p3.pv > 0 || p4.pv > 0 )){
+		
+	
+		// texte choix actions 
         printf("Choose your action :\nAttack ( Enter 1 )\nDefend ( Enter 2 )\nPoison spell : mana cost 30 ( Enter 3 )\nAntidote : mana cost 25 ( Enter 4 )\n");
         
-        // Issue with the State if invalid command damage of poison still occured
-        // SOLVED with this variable
-        errorChoice = 0;
         
         // Player choice
-        scanf("%d", &choice);
-        
-        // Choice of the monster
-        monsterChoice = rand()%2+1;
-        
-        // Mana regeneration
-        if ( manaPlayer < 50 ){
+		if ( p1.death == 0 ){
+			
+			scanf("%d", &p1.choice);
+			
+			// calcul attaque
+			// parametres de la fonction "force"
+			p1.attack = attack( p1.force );
+			
+		}
+		
+        if ( p2.death == 0 ){
+			
+			scanf("%d", &p2.choice);
+			
+			// Mana regeneration
+			if ( p2.mana < p2.mana ){
+				
+				p2.mana = p2.mana++;
             
-            manaPlayer = manaPlayer + 1;
+			}
+			
+			p2.attack = attack( p2.force );
+			
+		}
+		
+		if ( p3.death == 0 ){
+			
+			scanf("%d", &p3.choice);
+			
+			if ( p3.mana < p3.mana ){
             
-        }
+				p3.mana = p3.mana++;
+            
+			}
+			
+			p3.attack = attack( p3.force );
+			
+		}
+		
+		if ( p4.death == 0 ){
+			
+			scanf("%d", &p4.choice);
+			
+			p4.attack = attack( p4.force );
+			
+		}
+		
+		if ( m1.death == 0 ){
+		
+			// Choice of the monster
+			m1.choice = rand()%2+1;
         
-        // If player is not poisoned the monster cast Poison
-        if ( manaMonster > 20 && playerState == 0 ){
+			// If player is not poisoned the monster cast Poison
+			if ( m1.mana >= 20 && p1.state == 0 && p1.death == 0 ){
             
-            monsterChoice = 3;
+				m1.choice = 3;
             
-        }
+			}
         
+			m1.attack = attack( m1.force );
+		
+		}
+		
 		// player turn
-		
-		// calcul des 2 attaques
-		attackPlayer = attack ( attackPlayer );
-		attackMonster = attack ( attackMonster );
-		
 		//defense
-		if ( choice == 2 ){
+		if ( p1.choice == 2 ){
 			
-			attackMonster = defense ( attackMonster );
+			m1.attack = defense ( m1.attack );
 			
-			attackPlayer = 0;
+			p1.attack = 0;
+			
+		}
+		
+		if ( p2.choice == 2 ){
+			
+			m1.attack = defense ( m1.attack );
+			
+			p2.attack = 0;
+			
+		}
+		
+		if ( p3.choice == 2 ){
+			
+			m1.attack = defense ( m1.attack );
+			
+			p3.attack = 0;
+			
+		}
+		
+		if ( p3.choice == 2 ){
+			
+			m1.attack = defense ( m1.attack );
+			
+			p3.attack = 0;
 			
 		}
 		
 		// poison 
-		if ( choice == 3 && manaPlayer >= 30 ){
+		if ( p2.choice == 3 && p2.mana >= 30 ){
 			
-			monsterState = poison ( monsterState );
-			manaPlayer = manaPlayer - 30;
+			m1.state = poison ( m1.state );
+			p2.mana -= 30;
 			
-			attackPlayer = 0;
+			p2.attack = 0;
 			
 		}
 		
 		// antidote 
 		
-		if ( choice == 4 && manaPlayer >= 25 ){
+		if ( p3.choice == 4 && p3.mana >= 25 ){
 			
-			playerState = 0;
-			manaPlayer = manaPlayer - 25;
+			printf("Choose target :\n");
+			scanf("%d", &p3.target);
 			
-			attackPlayer = 0;
+			if ( p3.target == 1 ){
+				
+				p1.state = 0;
+				
+			}
+			
+			if ( p3.target == 2 ){
+				
+				p2.state = 0;
+				
+			}
+			
+			if ( p3.target == 3 ){
+				
+				p3.state = 0;
+				
+			}
+			
+			if ( p3.target == 4 ){
+				
+				p4.state = 0;
+				
+			}
+			
+			p3.mana = p3.mana - 25;
+			
+			p3.attack = 0;
 			
 		}
 		
 		
 		// Monster turn
 		
-		if ( monsterChoice == 2 ){ 
+		if ( m1.choice == 2 ){ 
 			
-			attackPlayer = defense ( attackMonster );	
+			p1.attack = defense ( p1.attack );	
+			p2.attack = defense ( p2.attack );
+			p3.attack = defense ( p3.attack );
+			p4.attack = defense ( p4.attack );
 			
-			attackMonster = 0;
+			m1.attack = 0;
 			
 		}
 		
-		if ( monsterChoice == 3 && manaMonster >= 20 && playerState == 0 ){
+		if ( m1.choice == 3 && m1.mana >= 20 ){
 			
-			playerState = poison ( playerState );
-			manaMonster = manaMonster - 20;
+			p1.state = poison ( p1.state );
+			m1.mana -= 20;
 			
-			attackMonster = 0;
+			m1.attack = 0;
 		
 		}
 		
 		//calcul des dommage
-		printf("Player attack : - %d pv\n", attackPlayer);
-		pvMonster = damage ( attackPlayer , monsterState , pvMonster );
-		printf("Pv Monster : %d\n", pvMonster);
 		
-		printf("Monster attack : - %d pv\n", attackMonster);
-		pvPlayer = damage ( attackMonster , playerState , pvPlayer );
-		printf("Pv Player : %d\n", pvPlayer);
+		// damage by player
+		printf("Player 1 attack : - %d pv\n", p1.attack);
+		m1.pv = damage ( p1.attack , m1.state , m1.pv );
+		printf("Pv Monster : %d\n", m1.pv );
+		
+		printf("Player 2 attack : - %d pv\n", p2.attack);
+		m1.pv = damage ( p2.attack , m1.state , m1.pv );
+		printf("Pv Monster : %d\n", m1.pv );
+		
+		printf("Player 3 attack : - %d pv\n", p3.attack);
+		m1.pv = damage ( p3.attack , m1.state , m1.pv );
+		printf("Pv Monster : %d\n", m1.pv );
+		
+		printf("Player 4 attack : - %d pv\n", p4.attack);
+		m1.pv = damage ( p4.attack , m1.state , m1.pv );
+		printf("Pv Monster : %d\n", m1.pv );
+		
+		// damage by monster
+		if ( m1.target == 1 ){
+		
+			printf("Monster attack : - %d pv\n", m1.attack);
+			p1.pv = damage ( m1.attack , p1.state , p1.pv );
+			printf("Pv Player : %d\n", p1.pv);
+		
+		}
+		
+		if ( m1.target == 2 ){
+		
+			printf("Monster attack : - %d pv\n", m1.attack);
+			p2.pv = damage ( m1.attack , p2.state , p2.pv );
+			printf("Pv Player : %d\n", p2.pv);
+		
+		}
+		
+		if ( m1.target == 3 ){
+		
+			printf("Monster attack : - %d pv\n", m1.attack);
+			p3.pv = damage ( m1.attack , p3.state , p3.pv );
+			printf("Pv Player : %d\n", p3.pv);
+		
+		}
+		
+		if ( m1.target == 4 ){
+		
+			printf("Monster attack : - %d pv\n", m1.attack);
+			p4.pv = damage ( m1.attack , p4.state , p4.pv );
+			printf("Pv Player : %d\n", p4.pv);
+		
+		}
 		
 		printf("Recap :\n");
-		printf("Pv Monster : %d\n", pvMonster);
-        printf("Mana Monster : %d\n", manaMonster);
-        printf("Pv Player : %d\n", pvPlayer);
-        printf("Mana Player : %d\n", manaPlayer);
+		printf("Pv Monster : %d\n", m1.pv);
+		printf("Mana Monster : %d\n", m1.mana);
+		printf("Pv Player 1 : %d\n", p1.pv);
+		printf("Pv Player 2 : %d\n", p2.pv);
+		printf("Mana Player 2 : %d\n", p2.mana);
+		printf("Pv Player 3 : %d\n", p3.pv);
+		printf("Mana Player 3 : %d\n", p3.mana);
+		printf("Pv Player 4 : %d\n", p4.pv);
 		
 		
-        // PLAYER and MONSTER
-                
-        // Not enough mana Poison
-        /*if ( choice == 3 && manaPlayer < 30 ){
-            
-            printf("Not enough mana.\n");
-            errorChoice = 1;
-        }
-        
-        // Not enough mana Antidote
-        if ( choice == 4 && manaPlayer < 25 ){
-            
-            printf("Not enough mana.\n");
-            errorChoice = 1;
-        }
-        
-        // Poison and Poison 
-        if ( choice == 3 && manaPlayer >= 30 && monsterChoice == 3 ){
-            
-            monsterState = 1;
-            printf("Monster poisoned.\n");
-            manaPlayer = manaPlayer - 30;
-            
-            playerState = 1;
-            printf("Player poisoned.\n");
-            manaMonster = manaMonster - 20;
-            
-        }
-        
-        // Attack and Poison 
-        if ( choice == 1 && monsterChoice == 3 ){
-            
-            attackPlayer = rand()%20+5;
-            printf("Player attack : - %d pv\n", attackPlayer);
-            pvMonster = pvMonster - attackPlayer;
-            
-            playerState = 1;
-            printf("Player poisoned.\n");
-            manaMonster = manaMonster - 20;
-            
-        }
-        
-        // Defense and Poison
-        if ( choice == 2 && monsterChoice == 3 ){
-            
-            playerState = 1;
-            printf("Player poisoned.\n");
-            manaMonster = manaMonster - 20;
-            
-        }
-        
-        // Antidote and Poison
-        if ( choice == 4 && manaPlayer >= 25 && monsterChoice == 3 ){
-            
-            if ( playerState == 0 ){
-                
-                printf("You try to cure yourself but nothing happen.\n");
-                manaPlayer = manaPlayer - 25;
-            }
-            
-            if ( playerState == 1 ){
-                
-                playerState = 0;
-                printf("You are cured.\n");
-                manaPlayer = manaPlayer - 25;
-                
-            }
-            
-            playerState = 1;
-            printf("Player poisoned.\n");
-            manaMonster = manaMonster - 20;
-            
-        }
-        
-        // Antidote and Defense
-        if ( choice == 4 && manaPlayer >= 25 && monsterChoice == 2 ){
-            
-            printf("Monster defend.\n");
-            
-            if ( playerState == 0 ){
-                
-                printf("You try to cure yourself but nothing happen.\n");
-                manaPlayer = manaPlayer - 25;
-            }
-            
-            if ( playerState == 1 ){
-                
-                playerState = 0;
-                printf("You are cured.\n");
-                manaPlayer = manaPlayer - 25;
-                
-            playerState = 1;
-            printf("Player poisoned.\n");
-            manaMonster = manaMonster - 20;
-            
-            }
-        
-        }
-        
-        // Antidote and Attack
-        if ( choice == 4 && manaPlayer >= 25 && monsterChoice == 1 ){
-            
-            attackMonster = rand()%20+5;
-            printf("Monster attack : - %d pv\n", attackMonster);
-            pvPlayer = pvPlayer - attackMonster;
-            
-            if ( playerState == 0 ){
-                
-                printf("You try to cure yourself but nothing happen.\n");
-                manaPlayer = manaPlayer - 25;
-            }
-            
-            if ( playerState == 1 ){
-                
-                playerState = 0;
-                printf("You are cured.\n");
-                manaPlayer = manaPlayer - 25;
-                
-            }
-        
-        }
-            
-        // Poison and Attack
-        if ( choice == 3 && manaPlayer >= 30 && monsterChoice == 1 ){
-            
-            attackMonster = rand()%20+5;
-            printf("Monster attack : - %d pv\n", attackMonster);
-            pvPlayer = pvPlayer - attackMonster;
-            
-            monsterState = 1;
-            printf("Monster poisoned.\n");
-            manaPlayer = manaPlayer - 30;
-                
-        }
-        
-        // Poison and Defense 
-        if ( choice == 3 && manaPlayer >= 30 && monsterChoice == 2 ){
-            
-            printf("Monster defend.\n");
-            
-            monsterState = 1;
-            printf("Monster poisoned.\n");
-            manaPlayer = manaPlayer - 30;
-            
-        }
-        
-        // Attack and Attack 
-        if ( choice == 1 && monsterChoice == 1 ){
-        
-            attackPlayer = rand()%20+5;
-            printf("Player attack : - %d pv\n", attackPlayer);
-            pvMonster = pvMonster - attackPlayer;
-
-            attackMonster = rand()%20+5;
-            printf("Monster attack : - %d pv\n", attackMonster);
-            pvPlayer = pvPlayer - attackMonster;
-            
-        }
-        
-        // Defense and Attack 
-        if ( choice == 2 && monsterChoice == 1 ){
-            
-            attackMonster = rand()%20+5;
-            attackMonster = attackMonster / 4;
-            printf("Reduced monster attack : - %d pv\n", attackMonster);
-            pvPlayer = pvPlayer - attackMonster;
-            
-        }
-        
-        // Attack and Defense
-        if ( choice == 1 && monsterChoice == 2 ){
-            
-            attackPlayer = rand()%20+5;
-            attackPlayer = attackPlayer / 4;
-            printf("Monster defend.\n");
-            printf("Reduced player attack : - %d pv\n", attackPlayer);
-            pvMonster = pvMonster - attackPlayer;
-        
-        }
-        
-        // Defense and Defense
-        if ( choice == 2 && monsterChoice == 2 ){
-            
-            printf("Nothing happened.\n");
-                
-        }
-        
-        // Invalid choice
-        if ( choice != 1 && choice != 2 && choice != 3 && choice != 4 ){
-            
-            printf("Invalid choice.\n");
-            errorChoice = 0;
-                
-        }
-        
-        // Poison Damage on monster
-        if ( monsterState == 1 && errorChoice == 0 ){
-            
-            pvMonster = pvMonster - 2;
-            printf("Poison damage on monster : - 2 pv\n");
-            
-        }
-        
-        // Poison Damage on player
-        if ( playerState == 1 && errorChoice == 0 ){
-            
-            pvPlayer = pvPlayer - 4;
-            printf("Poison damage on player : - 4 pv\n");
-            
-        }
-        
-		
-        // Recap of life and mana
-        printf("Pv Monster : %d\n", pvMonster);
-        printf("Mana Monster : %d\n", manaMonster);
-        printf("Pv Player : %d\n", pvPlayer);
-        printf("Mana Player : %d\n", manaPlayer);
-        */
-        // Monster death
-        if ( pvMonster <= 0 ){
-            attackMonster = 0;
+		// Monster death
+        if ( m1.pv <= 0 ){
+            m1.attack = 0;
             printf("You have slain the Monster.\n");
+			m1.death = 1;
             
         }
         
         // Player death
-        if ( pvPlayer <= 0 ){
-            attackPlayer = 0;
-            printf("You have been killed by the Monster.\n");
+        if ( p1.pv <= 0 && p1.death == 0 ){
+            p1.attack = 0;
+            printf("Player 1 has been killed by the Monster.\n");
+			p1.death = 1;
+			m1.target += 1;
             
         }
+		
+		if ( p2.pv <= 0 && p2.death == 0 ){
+            p2.attack = 0;
+            printf("Player 2 has been killed by the Monster.\n");
+			p2.death = 1;
+			m1.target += 1;
+            
+        }
+		
+		if ( p3.pv <= 0 && p3.death == 0 ){
+            p3.attack = 0;
+            printf("Player 3 has been killed by the Monster.\n");
+			p3.death = 1;
+			m1.target += 1;
+            
+        }
+		
+		if ( p4.pv <= 0 && p4.death == 0 ){
+            p4.attack = 0;
+            printf("Player 4 has been killed by the Monster.\n");
+			p4.death = 1;
+			m1.target += 1;
+            
+        }
+		
         
     }
-    
-    return 0;
+  
+  return 0;
 }
