@@ -65,8 +65,48 @@ int poison ( int s ){
 int main(void){
     
     srand(time(NULL));
-    
-    int errorChoice;
+	
+	int chooseYouMonster;
+	printf("Enter a choice between 1 and 3\n"); 
+	scanf("%d",&chooseYouMonster);
+	
+	if ( chooseYouMonster != 1 && chooseYouMonster != 1 && chooseYouMonster != 3 ){
+		
+		printf("Enter a choice between 1 and 3\n"); 
+		scanf("%d",&chooseYouMonster);
+		
+	}
+		
+	generate m1 = {0,0,0,0,0,0,1,0};
+	
+	if ( chooseYouMonster == 1 ){
+		
+		//monster v3
+		m1.pv = 500;
+		m1.mana = 40;
+		m1.force = 4;
+	
+	}
+	
+	if ( chooseYouMonster == 2 ){
+		
+		//monster v2
+		m1.pv = 400;
+		m1.mana = 100;
+		m1.force = 5;
+	
+	}
+	
+	if ( chooseYouMonster == 3 ){
+		
+		//monster v1
+		m1.pv = 200;
+		m1.mana = 0;
+		m1.force = 10;
+		
+	}
+	
+	
 	
 		// caracteristique
 		// normal
@@ -82,8 +122,7 @@ int main(void){
 		// tank
 		generate p4 = {250,0,2,0,0,0,0,0};
 		
-		//monster
-		generate m1 = {500,40,80,0,0,0,1,0};
+		
 		
 	
 	printf("Pv Monster : %d\n", m1.pv);
@@ -295,7 +334,7 @@ int main(void){
 		
 			printf("Monster attack : - %d pv\n", m1.attack);
 			p1.pv = damage ( m1.attack , p1.state , p1.pv );
-			printf("Pv Player : %d\n", p1.pv);
+			printf("Pv Player 1 : %d\n", p1.pv);
 		
 		}
 		
@@ -303,7 +342,7 @@ int main(void){
 		
 			printf("Monster attack : - %d pv\n", m1.attack);
 			p2.pv = damage ( m1.attack , p2.state , p2.pv );
-			printf("Pv Player : %d\n", p2.pv);
+			printf("Pv Player 1 : %d\n", p2.pv);
 		
 		}
 		
@@ -311,7 +350,7 @@ int main(void){
 		
 			printf("Monster attack : - %d pv\n", m1.attack);
 			p3.pv = damage ( m1.attack , p3.state , p3.pv );
-			printf("Pv Player : %d\n", p3.pv);
+			printf("Pv Player 1 : %d\n", p3.pv);
 		
 		}
 		
@@ -319,7 +358,7 @@ int main(void){
 		
 			printf("Monster attack : - %d pv\n", m1.attack);
 			p4.pv = damage ( m1.attack , p4.state , p4.pv );
-			printf("Pv Player : %d\n", p4.pv);
+			printf("Pv Player 1 : %d\n", p4.pv);
 		
 		}
 		
