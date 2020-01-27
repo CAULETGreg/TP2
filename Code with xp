@@ -65,6 +65,50 @@ int poison ( int s ){
 	s = 1;
 	
 	return s;
+
+// Healing Function <=========================================================================================================
+
+int heal (int Pp){
+
+
+
+	Pp = Pp+25;
+
+
+
+	return Pp;
+
+}
+
+//Antidote Function <=========================================================================================================
+
+int antidote (int PState){
+
+
+
+	PState = 0;
+
+
+
+	return PState;
+
+
+}
+
+//Fire Ball (Mage Skill) <=========================================================================================================
+
+int fire (int fi){
+
+
+
+	fi = fi + 10;
+
+
+
+	return fi;
+
+}
+
 	
 }
 
@@ -253,7 +297,7 @@ int main(void){
 			p3.attack = 0;
 			
 		}
-		
+
 		
 		// Monster turn
 		
@@ -378,6 +422,7 @@ int main(void){
 			printf("Player 2 is now : %d of HP, %d OF MANA and attack with %d points\n",p2.pv,p2.mana,p2.force);
 			printf("Player 3 is now : %d of HP, %d OF MANA and attack with %d points\n",p3.pv,p3.mana,p3.force);
 			printf("Player 4 is now : %d of HP, %d OF MANA and attack with %d points\n",p4.pv,p4.mana,p4.force);
+
             
         }
         
